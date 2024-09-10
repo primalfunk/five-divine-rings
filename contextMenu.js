@@ -36,6 +36,8 @@ export class ContextMenu {
                 this.addOption('Create Local Spy (Cost: 20 gold, 5 intel, 1 AP)', () => {
                     this.createLocalSpy(cell, player);
                 });
+            } else {
+                this.addOption('Create Local Spy (Insufficient Resources)', () => {}, true);
             }
         }
 
@@ -43,11 +45,17 @@ export class ContextMenu {
         this.addOption('Close Menu', () => this.hideMenu());
     }
 
-    addOption(text, action) {
+    addOption(text, action, disabled = false) {
         const option = document.createElement('div');
         option.textContent = text;
         option.classList.add('menu-option');
-        option.addEventListener('click', action);
+        
+        if (!disabled) {
+            option.addEventListener('click', action);
+        } else {
+            option.classList.add('disabled');  // Add disabled styling (to be defined in CSS)
+        }
+
         this.menuElement.appendChild(option);
     }
 
@@ -68,8 +76,16 @@ export class ContextMenu {
 
             // Deduct 1 AP and update the game state
             player.spendAP(1);
-            this.gameManager.spendAP(1); // End the turn if all AP is spent
-            console.log(`Local spy created in cell ${cell.id}`);
+            this.gameManager.spendAP(1);  // End the turn if all AP is spent
+
+            // **Update the UI immediately** to reflect new values
+            this.gameManager.uiManager.updateTurnInfo(player, player.getActionPoints());
+
+            // **Log the action in the action logger**
+            const logMessage = `Created Local Spy in District ${cell.id}. Gold spent: 20, Intel spent: 5. Remaining Gold: ${player.gold}, Remaining Intel: ${player.intel}.`;
+            this.gameManager.actionLogger.logAction(logMessage);
+
+            console.log(logMessage);
 
             // Hide the menu after the action
             this.hideMenu();

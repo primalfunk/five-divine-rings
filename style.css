@@ -113,6 +113,11 @@
     text-align: center;
 }
 
+.modal-content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
 .modal-content button {
     margin-top: 15px;
     padding: 10px;
