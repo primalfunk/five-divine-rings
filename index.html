@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Five Divine Rings</title>
+    <!-- D3.js CDN -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Turf.js CDN -->
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+    <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Container to hold both the map and the info area -->
+    <div id="container">
+        <svg id="voronoi-map" width="800" height="800"></svg>
+        <div id="info-area">
+            <div id="game-title">The Five Divine Rings</div>
+        
+            <!-- Turn Information -->
+            <div id="turn-info">
+                <h3>Turn Information</h3>
+                <p>Player: <span id="turn-player"></span></p>
+                <p>Turn AP: <span id="turn-ap"></span></p>
+                <p>Gold: <span id="player-gold"></span></p> <!-- Correct ID as used in JavaScript -->
+                <p>Intel: <span id="player-intel"></span></p> <!-- Correct ID as used in JavaScript -->
+                <p>Districts: <span id="player-districts"></span></p> <!-- Correct ID as used in JavaScript -->
+                <button id="skip-button">Skip Turn</button>
+            </div>
+        
+            <!-- District Information -->
+            <div id="district-info-card" class="district-info-card">
+                <h3>District Information</h3>
+                <p>ID: <span id="district-id"></span></p>
+                <p>Owner ID: <span id="district-owner"></span></p>
+                <p>Population: <span id="district-population"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include main.js -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>
