@@ -23,6 +23,7 @@ const uiManager = new UIManager();
 const gameManager = new GameManager(map, players, uiManager);
 
 // Now that gameManager is created, set it in uiManager
+map.setGameManager(gameManager);
 uiManager.gameManager = gameManager;
 
 // Assign cells to players

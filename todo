@@ -1,0 +1,242 @@
+1.1 Context Menu System
+Objective: Create a context menu that appears when a player clicks on a district, presenting different options based on the game state (e.g., spy actions, district management).
+Key Features:
+When a player clicks on a district, a context menu appears near the mouse position.
+The options available depend on the district state (whether it’s controlled, has spies, in rebellion, etc.) and the player's available actions.
+The context menu is dynamic, populating with different actions as the game progresses.
+Steps:
+Design the ContextMenu Class:
+
+Attributes:
+district (current district clicked on).
+actions[] (list of possible actions for the district).
+positionX, positionY (coordinates for where the menu will appear).
+Methods:
+showContextMenu(district, x, y): Displays the context menu with available actions.
+populateMenu(district): Dynamically populate the menu with relevant actions (e.g., send spy, gather intel).
+handleAction(action): Execute the action when selected from the menu (calls appropriate spy or district logic).
+Add Interaction to the Map:
+
+On a district click, open the context menu at the mouse position.
+Connect actions in the context menu to game mechanics (e.g., recruiting a spy, managing resources, etc.).
+Ensure that the context menu closes after an action is selected or if the player clicks outside of the menu.
+Modularize Actions:
+
+Ensure that different game actions (such as gathering intel or sending a spy) are added as modules and can be expanded easily in the future.
+Each action should have its own class or function (e.g., SendSpyAction, GatherIntelAction).
+Visual Design:
+
+Style the menu with CSS, ensuring it looks consistent with the rest of the game UI (perhaps a sleek, tactical design matching the espionage theme).
+Allow for hover effects when selecting an action.
+1.2 Spy Visual Representation on the Map
+Objective: When a spy is assigned to a district, display a spy icon or representation on the district that indicates its presence.
+Key Features:
+Spy icons are displayed on the map, indicating where spies are located.
+Icons should reflect the type of spy (e.g., Local, Converted).
+Spies will have interactive elements on hover, displaying information (e.g., which player controls the spy).
+Steps:
+Create the SpyRenderer Class:
+
+Attributes:
+spies[] (list of spies currently on the map).
+map (reference to the map, where the spies are placed).
+Methods:
+renderSpy(spy): Places a spy icon on the district where the spy resides.
+updateSpyPosition(spy): Updates the spy icon when the spy moves to a different district.
+onSpyHover(spy): Displays info when hovering over a spy (e.g., player ownership, spy type).
+Spy Interaction:
+
+When a player hovers over a spy, show the spy type and any relevant information (perhaps a tooltip or info card near the spy).
+Ensure that spy icons move dynamically when spies are relocated (e.g., after an action like "Send Spy").
+Visual Design:
+
+Design spy icons to be distinct for each type (e.g., a dagger for Converted spies, a magnifying glass for Local spies).
+Ensure spy icons scale properly when zooming in or out on the map.
+1.3 District Status Visual Effects
+Objective: Provide visual cues that indicate district statuses, such as loyalty, rebellion, conflict, or spy presence.
+Key Features:
+District borders change color or show effects based on loyalty, rebellion, or other statuses.
+The status is dynamic, updating as the game progresses and based on spy activities.
+Effects should be subtle but noticeable (e.g., glowing borders, color transitions).
+Steps:
+Create the DistrictStatusRenderer Class:
+
+Attributes:
+districts[] (reference to all districts).
+map (reference to the map to update district visuals).
+Methods:
+renderDistrictStatus(district): Update district borders based on loyalty, conflict, or other conditions.
+updateDistrictStatus(district): Dynamically change the district status when conditions change (e.g., when a rebellion starts or a spy infiltrates).
+Status Effects:
+
+Color-code district borders based on loyalty:
+Green for high loyalty.
+Yellow for medium loyalty.
+Red for low loyalty/rebellion.
+Use border effects (e.g., glowing edges, pulsing animations) to represent conflicts or espionage actions in progress.
+Link to Spy Actions:
+
+Update district borders automatically when a spy infiltrates or an action is performed that affects loyalty or district status.
+Ensure that status effects are reversed or updated once spies or players reclaim control.
+2. Integration of Context Menu and UI Enhancements with the Game
+Once the foundational UI features are ready, we can focus on integrating them into the gameplay loop.
+
+2.1 Connect Context Menu to Spy and District Actions
+After building the context menu, tie it to in-game actions (spying, gathering resources, district management).
+Ensure actions are updated dynamically based on the state of the game (e.g., if the player has a spy, "Send Spy" is disabled).
+2.2 Update Map Rendering with Status and Spy Information
+Integrate the SpyRenderer and DistrictStatusRenderer into the main map rendering function so that spies and district effects are always shown correctly.
+Ensure that when districts are clicked, both the context menu and the spy/district visual effects update based on the game state.
+2.3 Test and Iterate:
+Test interactions to make sure the context menu, spy movements, and district statuses are visually clear and that their actions are smooth.
+Ensure that performance isn’t hindered by multiple visual effects or spy icons being updated on the map.
+Class Suggestions for the UI Enhancements:
+ContextMenu:
+
+Attributes:
+currentDistrict (district being clicked).
+options[] (list of actions based on district status and player actions).
+Methods:
+showContextMenu(district, x, y): Show the context menu with action options.
+handleAction(action): Executes the chosen action.
+SpyRenderer:
+
+Attributes: spies[], map.
+Methods:
+renderSpy(spy): Places a spy on the map.
+updateSpyPosition(spy): Updates the spy position when moved.
+DistrictStatusRenderer:
+
+Attributes: districts[], map.
+Methods:
+renderDistrictStatus(district): Displays loyalty and rebellion status.
+updateDistrictStatus(district): Dynamically updates district status effects.
+
+Establish the Spy System as Core Gameplay:
+
+Goal: Implement the different types of spies, their abilities, and basic espionage mechanics.
+Key Classes: Spy, LocalSpy, InsideSpy, ConvertedSpy, SurvivorSpy, DeadSpy, EspionageAction.
+Functionality:
+Create spy types with specific actions they can perform (infiltration, sow discord, etc.).
+Implement a resource management system for spy upkeep (gold, intel).
+Add spy recruitment mechanics for players.
+Introduce the Military as an Indirect Force:
+
+Goal: Create a passive military system influenced by player decisions through espionage rather than direct control.
+Key Classes: District, MilitaryUnit, Garrison, Rebellion.
+Functionality:
+Implement district garrisons that defend regions.
+Link district loyalty to garrison strength, influenced by espionage.
+Create a system where rebellions occur due to spy actions, and AI-controlled military forces respond.
+Spy Actions and Player Resources:
+
+Goal: Flesh out spy actions and how they affect districts and the player’s resources.
+Key Classes: ResourceManager, Intel, Gold.
+Functionality:
+Spy actions should affect district loyalty, resource flow (gold, intel), and garrison strength.
+Players must balance resource management with spy upkeep costs.
+Create a basic system where players spend resources to perform spy actions.
+Player Interaction with Spies and Districts:
+
+Goal: Ensure players can interact with the game via spies and districts.
+Key Classes: Player, District, Spy, UIManager.
+Functionality:
+Implement player-specific actions for spying, resource gathering, and district interaction.
+Create a UI that shows player stats (gold, intel, district loyalty) and updates based on spy actions.
+Add buttons for player actions like "Recruit Spy," "Send Spy," "Gather Intel."
+AI-Controlled Military and Rebellion Mechanics:
+
+Goal: Introduce AI-controlled military actions, with forces responding to threats based on espionage and district stability.
+Key Classes: MilitaryCommanderAI, DistrictStability, Rebellion.
+Functionality:
+AI responds to destabilization caused by spies (e.g., district rebellion, resource shortages).
+Create a system where military units quash rebellions or defend loyal districts.
+Military actions will be indirectly triggered by district stability and player espionage.
+Turn-Based Action Point System:
+
+Goal: Integrate the turn-based system with espionage and resource mechanics.
+Key Classes: GameManager, TurnManager, ActionPointSystem.
+Functionality:
+Each player has a limited number of action points (AP) based on the number of districts or spies they control.
+Actions like sending spies, gathering intel, or sowing discord cost AP.
+The UI should show players’ remaining AP, and the game automatically progresses to the next player when AP is exhausted.
+Player and Spy Resource Management:
+
+Goal: Expand the resource economy around espionage and district control.
+Key Classes: ResourceManager, Spy, District, Intel, Gold.
+Functionality:
+Create a balanced system for resource management where spies require upkeep, but can also generate income and intel from districts.
+Players can gather resources by infiltrating districts or controlling strategic regions.
+Add a UI showing resource inflow/outflow, including intel gathering and district contributions.
+Endgame Victory Conditions:
+
+Goal: Define how a player wins (or loses) the game.
+Key Classes: VictoryManager, District, Spy, Military.
+Functionality:
+Introduce victory conditions such as controlling a certain number of districts or bankrupting enemy players.
+Losing too many districts or spies could trigger a defeat condition.
+Create dynamic victory tracking so players can see how close they are to winning or losing.
+Class Breakdown and Functionality
+Spy (Abstract Base Class)
+
+Description: Represents a generic spy with basic attributes and actions.
+Attributes: id, owner, location, cost, upkeep.
+Methods: performAction(), moveToDistrict(), gatherIntel(), sabotage().
+LocalSpy, InsideSpy, ConvertedSpy, SurvivorSpy, DeadSpy (Subclasses of Spy)
+
+Description: Each spy type will have its own unique methods and roles as described in the initial concept.
+Methods:
+LocalSpy: gatherResources(), recruit().
+InsideSpy: sowDiscord(), divertResources().
+ConvertedSpy: feedFalseIntel(), counterSpy().
+SurvivorSpy: sabotageSupplyLine(), evadeCapture().
+DeadSpy: createDistraction(), spreadFalseIntel().
+District
+
+Description: Represents a district on the map. Each district has resources, military strength, and loyalty.
+Attributes: id, loyalty, garrisonStrength, owner, population.
+Methods: getLoyalty(), modifyLoyalty(), getMilitaryStrength().
+MilitaryUnit
+
+Description: Represents the passive AI-controlled military units that guard districts or react to rebellions.
+Attributes: districtID, strength.
+Methods: defend(), quashRebellion(), reinforceDistrict().
+Player
+
+Description: Represents the player with districts, spies, and resources.
+Attributes: id, districts, spies, gold, intel, actionPoints.
+Methods: recruitSpy(), assignSpyToDistrict(), spendResources().
+EspionageAction
+
+Description: Handles specific espionage actions taken by spies (gathering intel, sabotage, etc.).
+Attributes: actionType, spy, targetDistrict.
+Methods: perform(), calculateSuccess().
+ResourceManager
+
+Description: Manages the flow of resources like gold and intel.
+Attributes: player, totalGold, totalIntel.
+Methods: addResources(), spendResources(), calculateIncome().
+Rebellion
+
+Description: Handles district uprisings caused by low loyalty and successful spy actions.
+Attributes: district, rebellionStrength.
+Methods: startRebellion(), calculateOutcome(), spreadToNeighboringDistrict().
+ActionPointSystem
+
+Description: Manages each player's action points during their turn.
+Attributes: player, actionPoints.
+Methods: spendActionPoints(), refreshPointsForNewTurn().
+GameManager
+
+Description: Manages game flow, turn order, and victory conditions.
+Attributes: players, currentTurn, gameMap.
+Methods: startTurn(), endTurn(), checkVictoryConditions().
+VictoryManager
+
+Description: Tracks and determines victory or loss conditions.
+Attributes: winCondition, loseCondition.
+Methods: checkVictory(), checkDefeat().
+ModalManager
+
+Description: Handles modals (pop-ups) for turn summaries, alerts, and other in-game messages.
+Methods: showTurnSummary(), showTurnAnnouncement().

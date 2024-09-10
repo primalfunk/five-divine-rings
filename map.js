@@ -1,5 +1,6 @@
 import { Cell } from './cell.js';
 import { CellMerger } from './cellMerger.js';
+import { ContextMenu } from './contextMenu.js';
 
 export class Map {
     constructor(width, height, numCells, target) {
@@ -12,7 +13,13 @@ export class Map {
         this.svg = d3.select("#voronoi-map").attr("width", this.width).attr("height", this.height);
         this.generateVoronoi();
         this.render();
-        this.mergeUntilTarget()
+        this.mergeUntilTarget();
+        this.contextMenu = null; 
+    }
+
+    setGameManager(gameManager) {
+        // Initialize the ContextMenu after gameManager is set
+        this.contextMenu = new ContextMenu(gameManager);
     }
 
     assignPopulations() {
@@ -90,6 +97,10 @@ export class Map {
                 if (this.hoverCallback) {
                     this.hoverCallback(null);
                 }
+            })            
+            .style("pointer-events", "all")  // Ensure hover is detected anywhere in the district
+            .on("contextmenu", (event, d) => {
+                this.contextMenu.showMenu(d, event);  // Show context menu on right-click
             });
     }
     
