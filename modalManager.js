@@ -5,8 +5,8 @@ export class ModalManager {
         document.body.appendChild(this.modal);
     }
 
-    // Display the turn announcement modal
     showTurnAnnouncement(player, callback) {
+        console.log(`Showing turn announcement for Player ${player.id}`);
         this.modal.innerHTML = `
             <div class="modal-content">
                 <h2>Player ${player.id}'s Turn</h2>
@@ -15,17 +15,28 @@ export class ModalManager {
             </div>
         `;
         this.modal.style.display = "block";
-
+    
         document.getElementById("start-turn-btn").addEventListener("click", () => {
+            console.log(`Turn start confirmed for Player ${player.id}`);
             this.hideModal();
             callback();  // Proceed with the turn
         });
     }
 
     showTurnSummary(player, actions, callback) {
+        // Step 1: Log the actions passed into the function
         console.log("Actions passed to showTurnSummary:", actions);
         console.log("Type of actions:", Array.isArray(actions) ? "Array" : typeof actions);
         console.log("Length of actions:", actions ? actions.length : "null or undefined");
+        
+        // Step 2: Log the contents of the actions array for further inspection
+        if (actions && actions.length > 0) {
+            actions.forEach((action, index) => {
+                console.log(`Action ${index + 1}:`, action);
+            });
+        } else {
+            console.log("No actions present or actions array is empty.");
+        }
     
         // Case where no actions were logged
         if (!actions || actions.length === 0) {
@@ -39,10 +50,15 @@ export class ModalManager {
                 </div>
             `;
         } else {
-            // Create the list of actions in HTML format
-            let actionSummary = actions.map(action => `<li>${action}</li>`).join("");
-            console.log("Action Summary HTML:", actionSummary);  // Log the HTML content
+            // Step 3: Filter out any falsy or empty actions (if necessary)
+            let validActions = actions.filter(action => action);
+            console.log("Filtered valid actions:", validActions);
     
+            // Step 4: Generate HTML list of valid actions
+            let actionSummary = validActions.map((action, index) => `<li>Action ${index + 1}: ${action}</li>`).join("");
+            console.log("Generated Action Summary HTML:", actionSummary);
+    
+            // Step 5: Create the modal content with the actions listed
             this.modal.innerHTML = `
                 <div class="modal-content">
                     <h2>Turn Summary for Player ${player.id}</h2>
@@ -53,20 +69,27 @@ export class ModalManager {
             `;
         }
     
-        // Display the modal
+        // Step 6: Display the modal
+        console.log("Displaying the turn summary modal.");
         this.modal.style.display = "block";
     
-        // Ensure only one event listener is attached to the end turn button
+        // Step 7: Ensure the 'End Turn' button works correctly
         const endTurnBtn = document.getElementById("end-turn-btn");
         if (endTurnBtn) {
+            console.log("Attaching event listener to the 'End Turn' button.");
             endTurnBtn.removeEventListener("click", this.endTurnHandler);  // Clear previous listeners if any
             this.endTurnHandler = () => {
+                console.log(`Turn end confirmed for Player ${player.id}`);
                 this.hideModal();
                 callback();  // Proceed to the next turn
             };
             endTurnBtn.addEventListener("click", this.endTurnHandler);
+        } else {
+            console.error("End Turn button not found in the DOM.");
         }
     }
+    
+    
     
 
     hideModal() {

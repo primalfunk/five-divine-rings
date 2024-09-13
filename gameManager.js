@@ -18,46 +18,72 @@ export class GameManager {
         // Make sure we assign cells before starting turns
         this.startTurn();
     }
+
     startTurn() {
-        // Start with logging key state data
-        console.log(`Player ${this.currentPlayer.id}'s turn started. AP: ${this.turnAP}`);
         this.currentPlayer = this.players[this.currentPlayerIndex];
-        this.turnAP = this.currentPlayer.getActionPoints();
-        this.uiManager.updateTurnInfo(this.currentPlayer, this.turnAP);
-        this.actionLogger.clearLog();
         
+        // Calculate AP for the new turn
+        this.turnAP = this.currentPlayer.getActionPoints();
+        console.log(`START TURN: Player ${this.currentPlayer.id} - AP: ${this.turnAP}`);
+        
+        // **Deduct spy upkeep and log it if greater than zero**
+        const totalUpkeepCost = this.currentPlayer.spies.length * 3;  // 3 gold per spy
+        if (totalUpkeepCost > 0) {
+            if (this.currentPlayer.gold >= totalUpkeepCost) {
+                this.currentPlayer.gold -= totalUpkeepCost;
+                console.log(`Spy upkeep deducted: ${totalUpkeepCost} gold. Remaining gold: ${this.currentPlayer.gold}`);
+                
+                // **Log the total upkeep action** as one item
+                const upkeepLogMessage = `Paid ${totalUpkeepCost} gold for the upkeep of ${this.currentPlayer.spies.length} spies.`;
+                this.actionLogger.logAction(upkeepLogMessage);
+            } else {
+                console.log(`Player ${this.currentPlayer.id} does not have enough gold for spy upkeep!`);
+                const insufficientLogMessage = `Could not pay spy upkeep! Insufficient gold (${this.currentPlayer.gold}).`;
+                this.actionLogger.logAction(insufficientLogMessage);
+            }
+        }
+    
+        // Update the UI to reflect the new gold and AP
+        this.uiManager.updateTurnInfo(this.currentPlayer, this.turnAP);
+    
         this.modalManager.showTurnAnnouncement(this.currentPlayer, () => {
             console.log(`Player ${this.currentPlayer.id}'s turn is underway.`);
+            this.uiManager.updateTurnInfo(this.currentPlayer, this.turnAP);
+            console.log("UI updated with new AP.");
         });
     }
-
-    endTurn() {
-        // Delay the fetching of turn summary to ensure all actions are logged
-        setTimeout(() => {
-            // Get logged actions for the current turn
-            const actions = [...this.actionLogger.getTurnSummary()];  // Explicitly clone the array
-            
-            console.log("End Turn Actions:", actions);  // Log to verify actions at this point
     
+    endTurn() {
+        console.log(`END TURN: Player ${this.currentPlayer.id} - AP: ${this.turnAP}`);
+        setTimeout(() => {
+            const actions = [...this.actionLogger.getTurnSummary()];
+            
+            console.log("Turn summary actions:", actions);  // Log to verify actions at this point
+        
             // Move to the next player
             this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+            console.log(`Switching to Player ${this.currentPlayerIndex + 1}`);
     
             // Show turn summary and log actions in the modal
             this.modalManager.showTurnSummary(this.currentPlayer, actions, () => {
                 console.log(`Player ${this.currentPlayer.id}'s turn ended.`);
+                this.actionLogger.clearLog();
                 this.startTurn();  // Start the next player's turn after the summary
             });
         }, 100);  // Small delay to ensure actions are logged
     }
     
     spendAP(amount = 1) {
-        this.turnAP -= amount;
-        this.uiManager.updateTurnAP(this.turnAP);
+        this.turnAP -= amount;  // Decrease the current turn's AP for actions
+        console.log(`AP SPENT: ${amount} - Remaining AP: ${this.turnAP}`);
+        this.uiManager.updateTurnAP(this.turnAP);  // Reflect updated AP in the UI
+    
         if (this.turnAP <= 0) {
-            this.endTurn();
+            console.log(`AP DEPLETED: Ending turn for Player ${this.currentPlayer.id}`);
+            this.endTurn();  // End turn if no AP remains
         }
     }
-
+    
     skipTurn() {
         this.endTurn();
     }

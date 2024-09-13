@@ -7,7 +7,7 @@ export class Player {
         this.intel = 20;
         this.cells = [];  // Player's districts
         this.spies = [];  // Player's spies
-        this.actionPoints = 0;  // AP will be dynamically calculated
+        this.actionPoints = 0;  // AP will be dynamically calculated at the start of each turn
     }
 
     assignCell(cell) {
@@ -15,31 +15,25 @@ export class Player {
         this.cells.push(cell);
     }
 
-    // Check if the player owns a specific district
     ownsDistrict(district) {
         return this.cells.includes(district);
     }
 
-    // Spend AP, reduce by the specified amount
-    spendAP(amount = 1) {
-        this.actionPoints -= amount;
+    // Calculate AP based on owned districts and spies, only at the start of a turn
+    getActionPoints() {
+        this.actionPoints = this.cells.length + this.spies.length;
         return this.actionPoints;
+    }
+
+    // Spy assignment should not affect AP mid-turn
+    assignSpy(spy) {
+        this.spies.push(spy);
+        console.log(`Assigned spy to district ID ${spy.district.id}`);
+        // Do not recalculate AP mid-turn, as it's already set for this turn
     }
 
     // Check if the player has enough AP to perform an action
     hasAvailableAP(amount) {
         return this.actionPoints >= amount;
-    }
-
-    // Assign a spy to the player
-    assignSpy(spy) {
-        this.spies.push(spy);
-        console.log(`Assigned spy to district ID ${spy.district.id}`);
-    }
-
-    // Get the player's current AP based on the number of cells and spies
-    getActionPoints() {
-        this.actionPoints = this.cells.length + this.spies.length;  // 1 AP per district and 1 AP per spy
-        return this.actionPoints;
     }
 }

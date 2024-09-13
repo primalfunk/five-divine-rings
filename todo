@@ -1,3 +1,4 @@
-1. spy upkeep costs (local spy has 5g each turn)
-2. spy presence creates ability to move spy; create target selection mode, a slight change in drawing
-3. the start of each turn has all of the valid neighbors of the player's owned cells with a background different somehow to indicate that action could happen there
+Spy Movement (Moving into neighboring districts) – This was next on our list, introducing the ability for spies to move into valid neighboring districts.
+Spy Embedding and Resource Generation – Once a spy is in a district not controlled by its owner, it can be embedded, generating resources (gold and intel) while losing the ability to move until reactivated.
+Spy Drawing on the Game Board (Visual Representation) – Visual feedback to show spies on the game board, so the player knows where spies are located.
+Adding Spy Count to UI (District Information and Turn Information) – Displaying the number of spies in the district and turn summary.

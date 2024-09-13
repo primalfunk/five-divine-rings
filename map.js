@@ -16,6 +16,42 @@ export class Map {
         this.mergeUntilTarget();
         this.contextMenu = null; 
     }
+    
+    highlightValidDistricts(spy, player) {
+        console.log(`Highlighting valid neighboring districts for spy in District ${spy.district.id}`);
+    
+        // Access the pre-calculated neighbors for the spy's current district
+        const neighbors = spy.district.neighbors;
+        
+        neighbors.forEach(neighbor => {
+            // Highlight only districts not owned by the player
+            if (neighbor.owner !== player.id) {
+                const cellElement = d3.select(`#cell-${neighbor.id}`);
+    
+                console.log(`Highlighting District ${neighbor.id}`);
+    
+                // Store the original fill for reverting later
+                neighbor.originalFill = cellElement.attr("fill");
+    
+                // Apply the highlighting effect
+                const lighterColor = this.lightenColor(player.color, 0.4);
+                cellElement.attr("fill", lighterColor).attr("stroke", "yellow").attr("stroke-width", 2);
+    
+                // Add a class to make it selectable
+                cellElement.classed("highlighted", true);
+            }
+        });
+    }
+    
+    clearHighlights() {
+        // Revert highlighted districts to their original color
+        d3.selectAll(".highlighted").each(function(d) {
+            const cellElement = d3.select(this);
+            const originalFill = d.originalFill || "#d3d3d3";  // Default if no owner
+            cellElement.attr("fill", originalFill).attr("stroke", "black").attr("stroke-width", 1);
+            cellElement.classed("highlighted", false);
+        });
+    }
 
     setGameManager(gameManager) {
         // Initialize the ContextMenu after gameManager is set
@@ -55,6 +91,7 @@ export class Map {
             .data(this.cellsData)
             .enter()
             .append("path")
+            .attr("id", d => `cell-${d.id}`)  
             .attr("d", d => {
                 const points = d.points.map(p => p.join(",")).join("L");
                 return `M${points}Z`;
@@ -134,9 +171,6 @@ export class Map {
             (B < 255 ? B < 1 ? 0 : B : 255)
         ).toString(16).slice(1);
     }
-    
-    
-    
     
     mergeTwoCells(smallestCell) {
         if (smallestCell.neighbors.length === 0) return;
